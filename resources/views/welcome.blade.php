@@ -81,7 +81,8 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    <a href="/comments">Comments</a>
+
                 </div>
 
                 <div class="links">
