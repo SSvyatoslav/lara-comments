@@ -51,17 +51,6 @@ class CommentController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -87,12 +76,17 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
+       /* dump($request);
+        dd($id);*/
 
          DB::table('comments')
             ->where('id', $id)
             ->update(['body' => $request->comment_body]);
          return redirect('/comments');
+
     }
+
+
 
 
     /**
@@ -103,6 +97,7 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
+
         // сначала удалим все дочерние элементы
         DB::delete('delete from comments where parent_id =?', [$id]);
         DB::delete('delete from comments where id =?', [$id]);
