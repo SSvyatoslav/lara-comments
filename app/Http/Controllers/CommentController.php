@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Comment;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function __construct(Request $request){
-        dump($request->route()->getName());
-    }
 
     /**
      * Display a listing of the resource.
@@ -17,8 +16,8 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
-        return view('comments.index');
+        $comments = DB::table('comments')->get()->groupBy('parent_id');
+        return view('comments.index' , ['comments' => $comments]);
     }
 
     /**
@@ -40,9 +39,15 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        echo 'save to db';
-        dump($request);
+        if(!$request->parent_id){
+            $request->parent_id = 0;
+        }
+
+        Comment::create([
+                'body' => $request->body,
+                'parent_id' => $request->parent_id
+            ]);
+        return back();
     }
 
     /**
@@ -65,8 +70,12 @@ class CommentController extends Controller
     public function edit($id)
     {
         //
-        dump($id);
-       return view('comments.edit', ['id' => $id]);
+       $comments_body = DB::table('comments')
+                            ->select('body')
+                            ->where('id', $id)
+                            ->get();
+
+       return view('comments.edit', ['id' => $id, 'body' => $comments_body[0]->body]);
     }
 
     /**
@@ -78,11 +87,13 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        dump($id);
-        dd($request);
 
+         DB::table('comments')
+            ->where('id', $id)
+            ->update(['body' => $request->comment_body]);
+         return redirect('/comments');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -92,7 +103,9 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
-        dd($id);
+        // сначала удалим все дочерние элементы
+        DB::delete('delete from comments where parent_id =?', [$id]);
+        DB::delete('delete from comments where id =?', [$id]);
+        return back();
     }
 }
