@@ -165,17 +165,14 @@
         </style>
     </head>
     <body>
-    <form action="{{ route('comments.update', ['comment'=> $id]) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <div class="form-group">
-            <label for="exampleFormControlTextarea1">Example textarea</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">{{ $id }}</textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-
-
-
+        <form action="{{ route('comments.update', ['comment'=> $id]) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Редактирование комментария</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="comment_body">{{ $body }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Обновить</button>
+        </form>
     </body>
 </html>
